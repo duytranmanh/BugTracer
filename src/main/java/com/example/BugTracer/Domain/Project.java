@@ -1,4 +1,4 @@
-package com.example.BugTracer.Models;
+package com.example.BugTracer.Domain;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
