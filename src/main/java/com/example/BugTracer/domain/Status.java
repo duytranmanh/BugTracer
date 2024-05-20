@@ -1,4 +1,4 @@
-package com.example.BugTracer.Domain;
+package com.example.BugTracer.domain;
 
 /**
  * 3 progress status:

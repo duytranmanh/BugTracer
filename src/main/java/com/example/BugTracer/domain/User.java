@@ -1,4 +1,4 @@
-package com.example.BugTracer.Domain;
+package com.example.BugTracer.domain;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -7,6 +7,9 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
+import java.util.Calendar;
+import java.util.Date;
+
 @Entity
 public class User {
   @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -14,8 +17,37 @@ public class User {
   private String username;
   private String password;
   private String email;
+  private final Date createdDate;
+  private Date lastUpdated;
   @Enumerated(EnumType.ORDINAL)
   private Role role;
+
+  public User() {
+    createdDate = Calendar.getInstance().getTime();
+    lastUpdated = createdDate;
+  }
+
+  public Date getCreatedDate() {
+    return createdDate;
+  }
+
+  public Date getLastUpdated() {
+    return lastUpdated;
+  }
+
+  public void setLastUpdated(Date lastUpdated) {
+    this.lastUpdated = lastUpdated;
+  }
+
+  public Role getRole() {
+    return role;
+  }
+
+  public void setRole(Role role) {
+    this.role = role;
+  }
+
+
 
   public int getId() {
     return id;

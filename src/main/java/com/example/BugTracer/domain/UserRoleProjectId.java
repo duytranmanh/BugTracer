@@ -1,8 +1,6 @@
-package com.example.BugTracer.Domain;
+package com.example.BugTracer.domain;
 
 import jakarta.persistence.Embeddable;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.ManyToOne;
 
 @Embeddable
