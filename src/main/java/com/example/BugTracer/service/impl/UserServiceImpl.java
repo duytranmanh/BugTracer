@@ -4,11 +4,14 @@ import com.example.BugTracer.dto.UserDTO;
 import com.example.BugTracer.domain.User;
 import com.example.BugTracer.repo.UserRepository;
 import com.example.BugTracer.service.UserService;
+import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.Provider;
 import org.modelmapper.TypeMap;
 import org.springframework.stereotype.Component;
-
+import org.modelmapper.Conditions;
+import java.util.Calendar;
 import java.util.Optional;
 
 @Component
@@ -17,15 +20,27 @@ public class UserServiceImpl implements UserService {
 
   private final UserRepository userRepository;
   private final ModelMapper modelMapper;
-  private final TypeMap<User, UserDTO> typeMap;
+  private final TypeMap<User, UserDTO> typeMapToDTO;
+
+  private final TypeMap<UserDTO, User> typeMapToUser;
 
   public UserServiceImpl(UserRepository userRepository, ModelMapper modelMapper) {
     this.userRepository = userRepository;
     this.modelMapper = modelMapper;
 
     //property mapping: skip password when mapping from user to userDTO
-    typeMap = modelMapper.createTypeMap(User.class, UserDTO.class);
-    typeMap.addMappings(ModelMapper -> ModelMapper.skip(UserDTO::setPassword));
+    typeMapToDTO = modelMapper.createTypeMap(User.class, UserDTO.class);
+    typeMapToDTO.addMappings(ModelMapper -> ModelMapper.skip(UserDTO::setPassword));
+
+
+    typeMapToUser = modelMapper.createTypeMap(UserDTO.class, User.class);
+    typeMapToUser.addMappings(src -> src.skip(User::setId));
+    typeMapToUser.addMappings(src -> src.when(Conditions.isNotNull()).map(UserDTO::getEmail,
+    User::setEmail));
+    typeMapToUser.addMappings(ModelMapper -> ModelMapper.when(Conditions.isNotNull()).map(UserDTO::getPassword,
+    User::setPassword));
+    typeMapToUser.addMappings(src -> src.when(Conditions.isNotNull()).map(UserDTO::getUsername,
+    User::setUsername));
   }
 
 
@@ -39,6 +54,10 @@ public class UserServiceImpl implements UserService {
       user.setUsername(userDTO.username);
       user.setPassword(userDTO.password);
       user.setEmail(userDTO.email);
+
+      //set last updated
+      user.setLastUpdated(Calendar.getInstance().getTime());
+//      User user = modelMapper.map(userDTO, User.class);
 
       //return a dto from a user that was saved to repo
       return modelMapper.map(userRepository.save(user), UserDTO.class);
@@ -60,8 +79,24 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public UserDTO updateUser(UserDTO userDTO) throws EntityNotFoundException {
-    return null;
+  public UserDTO updateUser(UserDTO userDTO, int userId) throws EntityNotFoundException {
+    Optional<User> userFound = userRepository.findById(userId);
+
+    if (userFound.isPresent()) {
+      if (userRepository.findByUsername(userDTO.username) != null) throw new EntityExistsException("this username is taken");
+
+      Provider<User> userProvider = p -> userRepository.getById(userId);
+      typeMapToUser.setProvider(userProvider);
+
+      User user = modelMapper.map(userDTO, User.class);
+
+      //set last updated
+      user.setLastUpdated(Calendar.getInstance().getTime());
+
+      return modelMapper.map(userRepository.save(user), UserDTO.class);
+    }
+    else throw new EntityNotFoundException();
+
   }
 
   @Override
