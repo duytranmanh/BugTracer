@@ -66,6 +66,8 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public UserDTO getUser(int userId) throws EntityNotFoundException {
-    return null;
+    Optional<User> userFound = userRepository.findById(userId);
+    if (userFound.isPresent()) return modelMapper.map(userFound, UserDTO.class);
+    else throw new EntityNotFoundException();
   }
 }
