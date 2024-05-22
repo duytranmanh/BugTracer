@@ -1,4 +1,4 @@
-package com.example.BugTracer.domain;
+package com.example.BugTracer.model;
 
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
@@ -13,7 +13,7 @@ public class Task {
   private String description;
 
   @Enumerated(EnumType.ORDINAL)
-  private Status status;
+  private TaskStatus taskStatus;
 
   public TaskId getId() {
     return id;
@@ -39,11 +39,11 @@ public class Task {
     this.description = description;
   }
 
-  public Status getStatus() {
-    return status;
+  public TaskStatus getStatus() {
+    return taskStatus;
   }
 
-  public void setStatus(Status status) {
-    this.status = status;
+  public void setStatus(TaskStatus taskStatus) {
+    this.taskStatus = taskStatus;
   }
 }

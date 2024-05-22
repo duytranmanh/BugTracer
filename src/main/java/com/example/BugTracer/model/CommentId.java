@@ -1,4 +1,4 @@
-package com.example.BugTracer.domain;
+package com.example.BugTracer.model;
 
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.ManyToOne;

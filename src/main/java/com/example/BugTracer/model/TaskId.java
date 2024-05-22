@@ -1,10 +1,10 @@
-package com.example.BugTracer.domain;
+package com.example.BugTracer.model;
 
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.ManyToOne;
 
 @Embeddable
-public class UserRoleProjectId {
+public class TaskId {
   @ManyToOne
   private User user;
   @ManyToOne

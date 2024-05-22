@@ -1,4 +1,4 @@
-package com.example.BugTracer.domain;
+package com.example.BugTracer.model;
 
 /**
  * 3 progress status:
@@ -6,6 +6,6 @@ package com.example.BugTracer.domain;
  *  unassigned if task is not assigned
  *  in-progress if task is assigned
  */
-public enum Status {
+public enum TaskStatus {
   DONE, UNASSIGNED, IN_PROGRESS;
 }

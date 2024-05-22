@@ -2,10 +2,8 @@ package com.example.BugTracer.controller;
 
 import com.example.BugTracer.dto.UserDTO;
 import com.example.BugTracer.service.UserService;
-import jakarta.persistence.EntityNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,49 +12,62 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * Controller for user endpoint
+ */
 @RestController
 @RequestMapping("/user")
 public class UserController {
 
-  @Autowired
-  UserService userService;
+  private final UserService userService;
 
+  /**
+   * UserService DI
+   * @param userService
+   */
+  public UserController(UserService userService) {
+    this.userService = userService;
+  }
+
+  /**
+   * Controller for adding user
+   * @param userDTO userDTO
+   * @return ResponseEntity with userDTO and http status
+   */
   @PostMapping
-  public ResponseEntity<UserDTO> addUser(@RequestBody UserDTO userDTO) {
-    return new ResponseEntity<>(userService.addUser(userDTO), HttpStatus.OK);
+  public ResponseEntity<UserDTO> add(@Valid @RequestBody UserDTO userDTO) {
+      return ResponseEntity.ok(userService.add(userDTO));
   }
 
+  /**
+   * Controller for deleting user
+   * @param userId id of user
+   * @return ResponseEntity with userDTO and http status
+   */
   @DeleteMapping(value = "/{id}")
-  public ResponseEntity<UserDTO> deleteUser(@PathVariable("id") int userId) {
-    try {
-      return new ResponseEntity<>(userService.deleteUser(userId), HttpStatus.OK);
-    }
-    catch (EntityNotFoundException e) {
-      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    }
+  public ResponseEntity<Integer> delete(@NotNull @PathVariable("id") Integer userId) {
+      return ResponseEntity.ok(userService.delete(userId));
   }
 
+  /**
+   * Controller for retrieving user
+   * @param userId id of user
+   * @return ResponseEntity with userDTO and http status
+   */
   @GetMapping(value = "/{id}")
-  public ResponseEntity<UserDTO> getUser(@PathVariable("id") int userId) {
-    try {
-      return new ResponseEntity<>(userService.getUser(userId), HttpStatus.OK);
-    }
-    catch (EntityNotFoundException e) {
-      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    }
+  public ResponseEntity<UserDTO> get(@NotNull @PathVariable("id") Integer userId) {
+      return ResponseEntity.ok(userService.get(userId));
   }
 
-  @PutMapping(value = "/{id}")
-  public ResponseEntity<UserDTO> updateUser(@PathVariable("id") int userId,
-      @RequestBody UserDTO userDTO) {
-    try {
-      return new ResponseEntity<>(userService.updateUser(userDTO, userId), HttpStatus.OK);
-    }
-    catch (EntityNotFoundException e) {
-      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    }
+  /**
+   * Controller for updating user
+   * @param userDTO userDTO
+   * @return ResponseEntity with userDTO and http status
+   */
+  @PutMapping
+  public ResponseEntity<UserDTO> update(@Valid @RequestBody UserDTO userDTO) {
+      return ResponseEntity.ok(userService.update(userDTO));
   }
 }

@@ -1,4 +1,4 @@
-package com.example.BugTracer.domain;
+package com.example.BugTracer.model;
 
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
@@ -11,7 +11,7 @@ public class UserRoleProject {
   private UserRoleProjectId id;
 
   @Enumerated(EnumType.ORDINAL)
-  private Role role;
+  private UserRole userRole;
 
   public UserRoleProjectId getId() {
     return id;
@@ -21,11 +21,11 @@ public class UserRoleProject {
     this.id = id;
   }
 
-  public Role getRole() {
-    return role;
+  public UserRole getRole() {
+    return userRole;
   }
 
-  public void setRole(Role role) {
-    this.role = role;
+  public void setRole(UserRole userRole) {
+    this.userRole = userRole;
   }
 }
