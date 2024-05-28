@@ -5,7 +5,7 @@ import jakarta.persistence.ManyToOne;
 
 @Embeddable
 public class CommentId {
-  @ManyToOne
+  @ManyToOne()
   private User user;
 
   @ManyToOne

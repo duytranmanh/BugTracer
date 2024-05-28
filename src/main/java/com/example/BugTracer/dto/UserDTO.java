@@ -13,11 +13,11 @@ public class UserDTO {
   @NotNull(message = "username cannot be empty")
   @Length(min = 1, max = 20, message = "your username is too long")
   private String username;
-  @NotNull(message = "username cannot be empty")
+  @NotNull(message = "password cannot be empty")
   @Length(min = 8, message = "your password is too short")
   private String password;
-  @NotNull(message = "username cannot be empty")
-  @Email
+  @NotNull(message = "email cannot be empty")
+  @Email(message = "not a valid email")
   private String email;
 
   private LocalDateTime createdDate;

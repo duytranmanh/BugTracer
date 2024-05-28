@@ -1,42 +1,50 @@
 package com.example.BugTracer.dto;
 
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.validation.constraints.NotNull;
+import org.hibernate.validator.constraints.Length;
+
+import java.time.LocalDateTime;
 import java.util.Date;
 
 public class ProjectDTO {
-  private int id;
-  private int name;
-  private Date createdDate;
-  private Date lastUpdated;
+  private Integer id;
 
-  public Date getCreatedDate() {
+  @NotNull
+  @Length(max = 20, message = "your project name is too long")
+  private String name;
+  private LocalDateTime createdDate;
+  private LocalDateTime lastUpdated;
+
+  public LocalDateTime getCreatedDate() {
     return createdDate;
   }
 
-  public void setCreatedDate(Date createdDate) {
+  public void setCreatedDate(LocalDateTime createdDate) {
     this.createdDate = createdDate;
   }
 
-  public Date getLastUpdated() {
+  public LocalDateTime getLastUpdated() {
     return lastUpdated;
   }
 
-  public void setLastUpdated(Date lastUpdated) {
+  public void setLastUpdated(LocalDateTime lastUpdated) {
     this.lastUpdated = lastUpdated;
   }
 
-  public int getId() {
+  public Integer getId() {
     return id;
   }
 
-  public void setId(int id) {
+  public void setId(Integer id) {
     this.id = id;
   }
 
-  public int getName() {
+  public String getName() {
     return name;
   }
 
-  public void setName(int name) {
+  public void setName(String name) {
     this.name = name;
   }
 }

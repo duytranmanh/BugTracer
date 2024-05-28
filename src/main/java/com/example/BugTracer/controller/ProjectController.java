@@ -2,13 +2,22 @@ package com.example.BugTracer.controller;
 
 import com.example.BugTracer.dto.ProjectDTO;
 import com.example.BugTracer.service.ProjectService;
-import org.springframework.http.HttpStatus;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+
+/**
+ * Controller for project endpoint
+ */
 @RestController
 @RequestMapping(value = "/project")
 public class ProjectController {
@@ -25,9 +34,22 @@ public class ProjectController {
    * @return ProjectDTO and Http Status(200-ok, 404- not found)
    */
   @PostMapping
-  public ResponseEntity<ProjectDTO> addProject(@RequestBody ProjectDTO projectDTO) {
-
-    return ResponseEntity.ok(projectService.addProject(projectDTO));
+  public ResponseEntity<ProjectDTO> addProject(@Valid @RequestBody ProjectDTO projectDTO) {
+    return ResponseEntity.ok(projectService.add(projectDTO));
   }
 
+  @DeleteMapping(value = "/{id}")
+  public ResponseEntity<Integer> deleteProject(@NotNull @PathVariable("id") Integer projectId) {
+    return ResponseEntity.ok(projectService.delete(projectId));
+  }
+
+  @PutMapping
+  public ResponseEntity<ProjectDTO> updateProject(@Valid @RequestBody ProjectDTO projectDTO) {
+    return ResponseEntity.ok(projectService.update(projectDTO));
+  }
+
+  @GetMapping(value = "/{id}")
+  public ResponseEntity<ProjectDTO> getProject(@NotNull @PathVariable("id") Integer projectId) {
+    return ResponseEntity.ok(projectService.get(projectId));
+  }
 }

@@ -67,7 +67,7 @@ public class UserServiceImpl implements UserService {
       //return a dto from a user that was saved to repo
       return modelMapper.map(userRepository.save(user), UserDTO.class);
     } else
-      throw new EntityExistsException("Please choose another username!");
+      throw new EntityExistsException("username");
   }
 
 
@@ -85,7 +85,7 @@ public class UserServiceImpl implements UserService {
       userRepository.deleteById(userId);
       return userId;
     } else {
-      throw new EntityNotFoundException("Cannot find user!");
+      throw new EntityNotFoundException("user");
     }
   }
 
@@ -100,18 +100,18 @@ public class UserServiceImpl implements UserService {
   public UserDTO update(UserDTO userDTO) throws EntityNotFoundException, EntityExistsException {
 
     if (userRepository.existsById(userDTO.getId())) {
-      User user = userRepository.getById(userDTO.getId());
+      User user = userRepository.getReferenceById(userDTO.getId());
       Provider<User> userProvider = p -> user;
       typeMapToUser.setProvider(userProvider);
 
       if (!userDTO.getUsername().equals(user.getUsername()) && userRepository.existsByUsername(
           userDTO.getUsername()))
-        throw new EntityExistsException("username already exist");
+        throw new EntityExistsException("username");
 
       return modelMapper.map(userRepository.save(modelMapper.map(userDTO, User.class)),
           UserDTO.class);
     } else
-      throw new EntityNotFoundException("user does not exist");
+      throw new EntityNotFoundException("user");
 
   }
 
@@ -125,8 +125,8 @@ public class UserServiceImpl implements UserService {
   @Override
   public UserDTO get(Integer userId) throws EntityNotFoundException {
     if (userRepository.existsById(userId))
-      return modelMapper.map(userRepository.getById(userId), UserDTO.class);
+      return modelMapper.map(userRepository.getReferenceById(userId), UserDTO.class);
     else
-      throw new EntityNotFoundException("user does not exist");
+      throw new EntityNotFoundException("user");
   }
 }

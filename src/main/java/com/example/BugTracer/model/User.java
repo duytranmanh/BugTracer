@@ -6,13 +6,17 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 import org.hibernate.validator.constraints.Length;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 public class User {
@@ -28,15 +32,26 @@ public class User {
   @NotNull(message = "username cannot be empty")
   @Email
   private String email;
+  @OneToMany
+  @Cascade(value = CascadeType.REMOVE)
+  private List<UserProject> userProjectList;
   private LocalDateTime createdDate;
   private LocalDateTime lastUpdated;
   @Enumerated(EnumType.ORDINAL)
-  private UserRole role;
+  private Role role;
 
   @PrePersist
   public void setUp() {
     createdDate = LocalDateTime.now();
-    role = UserRole.REGISTERED_USER;
+    role = Role.REGISTERED_USER;
+  }
+
+  public List<UserProject> getUserProjectList() {
+    return userProjectList;
+  }
+
+  public void setUserProjectList(List<UserProject> userProjectList) {
+    this.userProjectList = userProjectList;
   }
 
   @PreUpdate
@@ -52,17 +67,21 @@ public class User {
     return lastUpdated;
   }
 
-  public UserRole getRole() {
+  public Role getRole() {
     return role;
   }
 
-  public void setRole(UserRole userRole) {
+  public void setRole(Role userRole) {
     this.role = userRole;
   }
 
 
   public int getId() {
     return id;
+  }
+
+  public void setId(Integer id) {
+    this.id = id;
   }
 
   public String getUsername() {

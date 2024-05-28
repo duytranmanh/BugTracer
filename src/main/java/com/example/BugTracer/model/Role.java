@@ -1,5 +1,5 @@
 package com.example.BugTracer.model;
 
-public enum UserRole {
+public enum Role {
   REGISTERED_USER, PROJECT_ADMIN, PROJECT_MEMBER
 }

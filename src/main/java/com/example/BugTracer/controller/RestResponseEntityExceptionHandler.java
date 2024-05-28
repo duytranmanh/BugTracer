@@ -5,8 +5,12 @@ import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import java.util.List;
 
 /**
  * This class handles exceptions thrown in controllers
@@ -19,8 +23,9 @@ public class RestResponseEntityExceptionHandler{
    * @return bad request http status
    */
   @ExceptionHandler(EntityExistsException.class)
-  protected ResponseEntity<Object> handlingEntityExistException() {
-    return ResponseEntity.badRequest().build();
+  protected ResponseEntity<ResponseExceptionMessage> handlingEntityExistException(EntityExistsException e) {
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseExceptionMessage(e.getMessage() +
+        " already exist"));
   }
 
   /**
@@ -29,15 +34,22 @@ public class RestResponseEntityExceptionHandler{
    * @return not found http status
    */
   @ExceptionHandler(EntityNotFoundException.class)
-  protected ResponseEntity<ResponseExceptionMessage> handlingEntityNotFoundException() {
-    System.out.println("exception 33");
+  protected ResponseEntity<ResponseExceptionMessage> handlingEntityNotFoundException(EntityNotFoundException e) {
     return ResponseEntity.status(HttpStatus.NOT_FOUND)
-        .body(new ResponseExceptionMessage("username existed"));
+        .body(new ResponseExceptionMessage(e.getMessage() + " can not be found"));
   }
-//  @ExceptionHandler(EntityNotFoundException.class)
-//  protected ResponseEntity<String> handlingEntityNotFoundException() {
-//
-//    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("username not found");
-//  }
+
+  @ExceptionHandler(MethodArgumentNotValidException.class)
+  protected ResponseEntity<ResponseExceptionMessage> handlingMethodArgumentNotValidException (
+      MethodArgumentNotValidException e) {
+    String errorMessage = "";
+    List<FieldError> fieldErrorList = e.getFieldErrors();
+    for (FieldError error: fieldErrorList) {
+      errorMessage += error.getDefaultMessage() + " ";
+    }
+
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+        .body(new ResponseExceptionMessage(errorMessage));
+  }
 
 }
