@@ -10,8 +10,12 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.Provider;
 import org.modelmapper.TypeMap;
 import org.modelmapper.Conditions;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -128,5 +132,21 @@ public class UserServiceImpl implements UserService {
       return modelMapper.map(userRepository.getReferenceById(userId), UserDTO.class);
     else
       throw new EntityNotFoundException("user");
+  }
+
+  @Override
+  public List<UserDTO> getAll() throws EmptyResultDataAccessException {
+    List<UserDTO> dtoList = new ArrayList<>();
+    for (User user : userRepository.findAll()) {
+      dtoList.add(modelMapper.map(user, UserDTO.class));
+    }
+    return dtoList;
+  }
+
+  @Override
+  public UserDTO getByUsername(String username) throws EntityNotFoundException {
+    if (userRepository.existsByUsername(username))
+      return modelMapper.map((userRepository.getReferenceByUsername(username)), UserDTO.class);
+    else throw new EntityNotFoundException("username");
   }
 }

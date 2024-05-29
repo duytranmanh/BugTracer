@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Objects;
 
+
 public class UserDTO {
 
   private Integer id;
@@ -76,11 +77,12 @@ public class UserDTO {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
 
+
     UserDTO userDTO = (UserDTO) o;
 
     if (!username.equals(userDTO.username)) return false;
     if (!email.equals(userDTO.email)) return false;
-    return Objects.equals(password, userDTO.password);
+    return true;
   }
 
 }
