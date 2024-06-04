@@ -9,7 +9,7 @@ public class CommentId {
   private User user;
 
   @ManyToOne
-  private Project project;
+  private Task task;
 
   public User getUser() {
     return user;
@@ -19,11 +19,11 @@ public class CommentId {
     this.user = user;
   }
 
-  public Project getProject() {
-    return project;
+  public Task getProject() {
+    return task;
   }
 
-  public void setProject(Project project) {
-    this.project = project;
+  public void setProject(Task task) {
+    this.task = task;
   }
 }
