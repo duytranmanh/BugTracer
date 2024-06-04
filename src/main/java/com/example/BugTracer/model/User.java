@@ -16,6 +16,9 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
+import org.hibernate.annotations.Where;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -27,6 +30,8 @@ import java.util.List;
 @Entity
 @Table(name = "users")
 @EntityListeners(AuditingEntityListener.class)
+@SQLDelete(sql = "UPDATE users SET is_deleted = true WHERE id=?")
+@SQLRestriction(value = "is_deleted=false")
 public class User {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -50,11 +55,12 @@ public class User {
   @Enumerated(EnumType.ORDINAL)
   private Role role;
 
-
+  private Boolean isDeleted = Boolean.FALSE;
 
   @PrePersist
   public void setUp() {
-    role = Role.REGISTERED_USER;
+    if (role == null)
+      role = Role.REGISTERED_USER;
   }
 
   public List<UserProject> getUserProjectList() {
@@ -63,6 +69,14 @@ public class User {
 
   public void setUserProjectList(List<UserProject> userProjectList) {
     this.userProjectList = userProjectList;
+  }
+
+  public Boolean getDeleted() {
+    return isDeleted;
+  }
+
+  public void setDeleted(Boolean deleted) {
+    isDeleted = deleted;
   }
 
   public LocalDateTime getCreatedDate() {

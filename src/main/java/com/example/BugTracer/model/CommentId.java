@@ -5,7 +5,7 @@ import jakarta.persistence.ManyToOne;
 
 @Embeddable
 public class CommentId {
-  @ManyToOne()
+  @ManyToOne
   private User user;
 
   @ManyToOne
@@ -19,11 +19,11 @@ public class CommentId {
     this.user = user;
   }
 
-  public Task getProject() {
+  public Task getTask() {
     return task;
   }
 
-  public void setProject(Task task) {
+  public void setTask(Task task) {
     this.task = task;
   }
 }

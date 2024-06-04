@@ -21,7 +21,7 @@ public class AddRecordService {
   public AddRecordService(UserRepository userRepository) {
     this.userRepository = userRepository;
   }
-  //  @Transactional
+//  @Transactional
 //  public void insertRecords() {
 //    String sql = "INSERT INTO USERS (username, email, password) VALUES (?, ?, ?)";
 //    List<Object[]> batchArgs = new ArrayList<>();
@@ -35,7 +35,7 @@ public class AddRecordService {
   public void insertRecords(int recordNum) {
 
     List<User> userList = new ArrayList<>();
-    Faker faker = new Faker();
+//    Faker faker = new Faker();
 
     for (int i = 0; i < recordNum; i++) {
       User user = new User();

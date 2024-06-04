@@ -1,9 +1,13 @@
 package com.example.BugTracer.model;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.OneToMany;
+
+import java.util.List;
 
 @Entity
 public class Task {
@@ -14,6 +18,25 @@ public class Task {
 
   @Enumerated(EnumType.ORDINAL)
   private TaskStatus taskStatus;
+
+  @OneToMany(mappedBy = "id.task", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<Comment> commentList;
+
+  public TaskStatus getTaskStatus() {
+    return taskStatus;
+  }
+
+  public void setTaskStatus(TaskStatus taskStatus) {
+    this.taskStatus = taskStatus;
+  }
+
+  public List<Comment> getCommentList() {
+    return commentList;
+  }
+
+  public void setCommentList(List<Comment> commentList) {
+    this.commentList = commentList;
+  }
 
   public TaskId getId() {
     return id;

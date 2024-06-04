@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 /**
  * Controller for user endpoint
  */
@@ -69,5 +71,10 @@ public class UserController {
   @PutMapping
   public ResponseEntity<UserDTO> update(@Valid @RequestBody UserDTO userDTO) {
       return ResponseEntity.ok(userService.update(userDTO));
+  }
+
+  @GetMapping
+  public ResponseEntity<List<UserDTO>> getAll() {
+    return ResponseEntity.ok(userService.getAll());
   }
 }

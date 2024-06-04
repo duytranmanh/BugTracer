@@ -1,6 +1,7 @@
 package com.example.BugTracer.model;
 
 import com.example.BugTracer.dto.UserProjectDTO;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.GeneratedValue;
@@ -11,7 +12,6 @@ import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.validation.constraints.NotNull;
 import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -33,10 +33,29 @@ public class Project {
   @LastModifiedDate
   private LocalDateTime lastUpdated;
 
-  //TODO: fix cascade
-  @OneToMany
-  @Cascade(CascadeType.REMOVE)
+  @OneToMany(mappedBy = "id.project", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<UserProject> userProjectList;
+
+  @OneToMany(mappedBy = "id.project", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<Task> taskList;
+
+  public List<UserProject> getUserProjectList() {
+    return userProjectList;
+  }
+
+  public void setUserProjectList(List<UserProject> userProjectList) {
+    this.userProjectList = userProjectList;
+  }
+
+  public List<Task> getTaskList() {
+    return taskList;
+  }
+
+  public void setTaskList(List<Task> taskList) {
+    this.taskList = taskList;
+  }
+
+
 
   public void setId(Integer id) {
     this.id = id;

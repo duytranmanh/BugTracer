@@ -3,6 +3,8 @@ package com.example.BugTracer.service;
 import com.example.BugTracer.dto.ProjectDTO;
 import jakarta.persistence.EntityNotFoundException;
 
+import java.util.List;
+
 /**
  * Service for project CRUD operation
  */
@@ -41,4 +43,10 @@ public interface ProjectService {
    * @return id of the deleted user
    */
   ProjectDTO get(Integer projectId) throws EntityNotFoundException;
+
+  /**
+   * get all projects by calling repository
+   * @return list of projects
+   */
+  List<ProjectDTO> getAll();
 }

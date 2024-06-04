@@ -1,7 +1,9 @@
 package com.example.BugTracer.service.impl;
 
 import com.example.BugTracer.dto.ProjectDTO;
+import com.example.BugTracer.dto.UserDTO;
 import com.example.BugTracer.model.Project;
+import com.example.BugTracer.model.User;
 import com.example.BugTracer.repo.ProjectRepository;
 import com.example.BugTracer.service.ProjectService;
 import jakarta.persistence.EntityNotFoundException;
@@ -10,6 +12,9 @@ import org.modelmapper.Provider;
 import org.modelmapper.TypeMap;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Service
@@ -91,5 +96,20 @@ public class ProjectServiceImpl implements ProjectService {
     if (projectRepository.existsById(projectId))
       return modelMapper.map(projectRepository.getReferenceById(projectId), ProjectDTO.class);
     else throw new EntityNotFoundException("project");
+  }
+
+  /**
+   * get all projects by calling repository
+   *
+   * @return list of projects
+   */
+  @Override
+  public List<ProjectDTO> getAll() {
+    List<ProjectDTO> dtoList = new ArrayList<>();
+    for (Project project : projectRepository.findAll()) {
+      dtoList.add(modelMapper.map(project, ProjectDTO.class));
+    }
+
+    return dtoList;
   }
 }
