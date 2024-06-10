@@ -3,7 +3,6 @@ package com.example.BugTracer.service.impl;
 import com.example.BugTracer.dto.ProjectDTO;
 import com.example.BugTracer.dto.UserDTO;
 import com.example.BugTracer.model.Project;
-import com.example.BugTracer.model.User;
 import com.example.BugTracer.repo.ProjectRepository;
 import com.example.BugTracer.service.ProjectService;
 import jakarta.persistence.EntityNotFoundException;
@@ -15,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-
 
 @Service
 @Transactional
@@ -47,7 +45,9 @@ public class ProjectServiceImpl implements ProjectService {
   @Override
   public ProjectDTO add(ProjectDTO projectDTO) {
     Project project = modelMapper.map(projectDTO, Project.class);
-    return modelMapper.map(projectRepository.save(project), ProjectDTO.class);
+    Project projectSaved = projectRepository.save(project);
+    ProjectDTO returnProject = modelMapper.map(projectSaved, ProjectDTO.class);
+    return returnProject;
   }
 
   /**
@@ -111,5 +111,10 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     return dtoList;
+  }
+
+  @Override
+  public void deleteAll() {
+    projectRepository.deleteAll();
   }
 }

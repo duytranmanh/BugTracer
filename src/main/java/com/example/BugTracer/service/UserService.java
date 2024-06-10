@@ -1,6 +1,8 @@
 package com.example.BugTracer.service;
 
+import com.example.BugTracer.dto.ProjectDTO;
 import com.example.BugTracer.dto.UserDTO;
+import com.example.BugTracer.dto.UserProjectDTO;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -13,8 +15,8 @@ public interface UserService {
   UserDTO update(UserDTO userDTO) throws EntityNotFoundException, EntityExistsException;
   UserDTO get(Integer userId) throws EntityNotFoundException;
 
-  //TODO:get all user
   List<UserDTO> getAll() throws EmptyResultDataAccessException;
 
   UserDTO getByUsername(String username) throws EntityNotFoundException;
+  void deleteAll();
 }

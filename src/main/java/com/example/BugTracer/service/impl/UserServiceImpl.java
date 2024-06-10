@@ -1,7 +1,9 @@
 package com.example.BugTracer.service.impl;
 
+import com.example.BugTracer.dto.ProjectDTO;
 import com.example.BugTracer.dto.UserDTO;
 import com.example.BugTracer.model.User;
+import com.example.BugTracer.model.UserProject;
 import com.example.BugTracer.repo.UserRepository;
 import com.example.BugTracer.service.UserService;
 import jakarta.persistence.EntityExistsException;
@@ -149,4 +151,10 @@ public class UserServiceImpl implements UserService {
       return modelMapper.map((userRepository.getReferenceByUsername(username)), UserDTO.class);
     else throw new EntityNotFoundException("username");
   }
+
+  public void deleteAll() {
+    userRepository.deleteAll();
+  }
+
+
 }

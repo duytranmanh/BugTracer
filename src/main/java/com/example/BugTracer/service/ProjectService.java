@@ -1,6 +1,8 @@
 package com.example.BugTracer.service;
 
 import com.example.BugTracer.dto.ProjectDTO;
+import com.example.BugTracer.dto.UserDTO;
+import com.example.BugTracer.dto.UserProjectDTO;
 import jakarta.persistence.EntityNotFoundException;
 
 import java.util.List;
@@ -49,4 +51,8 @@ public interface ProjectService {
    * @return list of projects
    */
   List<ProjectDTO> getAll();
+
+  void deleteAll();
+
+
 }
