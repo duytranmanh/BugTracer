@@ -14,12 +14,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 
 /**
  * Controller for project endpoint
  */
 @RestController
-@RequestMapping(value = "/project")
+@RequestMapping(value = "/projects")
 public class ProjectController {
   private final ProjectService projectService;
 
@@ -51,5 +53,10 @@ public class ProjectController {
   @GetMapping(value = "/{id}")
   public ResponseEntity<ProjectDTO> getProject(@NotNull @PathVariable("id") Integer projectId) {
     return ResponseEntity.ok(projectService.get(projectId));
+  }
+
+  @GetMapping
+  public ResponseEntity<List<ProjectDTO>> getAllProjects() {
+    return ResponseEntity.ok(projectService.getAll());
   }
 }
