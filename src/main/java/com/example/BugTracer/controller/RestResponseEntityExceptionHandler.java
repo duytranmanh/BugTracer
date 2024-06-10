@@ -52,4 +52,9 @@ public class RestResponseEntityExceptionHandler{
         .body(new ResponseExceptionMessage(errorMessage));
   }
 
+  protected ResponseEntity<ResponseExceptionMessage> handlingIllegalArgumentException(IllegalArgumentException e) {
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+        .body(new ResponseExceptionMessage(e.getMessage()));
+  }
+
 }
