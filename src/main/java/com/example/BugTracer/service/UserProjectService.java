@@ -1,9 +1,12 @@
 package com.example.BugTracer.service;
 
+import com.example.BugTracer.dto.ProjectDTO;
+import com.example.BugTracer.dto.UserDTO;
 import com.example.BugTracer.dto.UserProjectDTO;
 import com.example.BugTracer.model.UserProjectId;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.persistence.criteria.CriteriaBuilder;
 
 import java.util.List;
 
@@ -15,7 +18,7 @@ public interface UserProjectService {
    * @param userProjectDTO userRoleProjectDTO
    * @return URPdto
    */
-  UserProjectDTO add(UserProjectDTO userProjectDTO) throws EntityExistsException;
+  UserProjectDTO add(UserProjectDTO userProjectDTO) throws EntityExistsException,EntityNotFoundException;
 
   /**
    * remove user out of a project by calling repository if id cannot be found, throw
@@ -24,7 +27,7 @@ public interface UserProjectService {
    * @param userProjectId id of user and project
    * @return id of the removed user
    */
-  Integer delete(UserProjectId userProjectId) throws EntityNotFoundException;
+  void delete(Integer userId, Integer projectId) throws EntityNotFoundException;
 
   /**
    * update user role in project by calling repository
@@ -39,26 +42,27 @@ public interface UserProjectService {
    * get user's role in the project by calling repository if id cannot be found, throw
    * EntityNotFoundException
    *
-   * @param userProjectId id of user and project
+   * @param userId    id of user and project
+   * @param projectId
    * @return id of the deleted user
    */
-  UserProjectDTO get(UserProjectId userProjectId) throws EntityNotFoundException;
+  UserProjectDTO get(Integer userId, Integer projectId) throws EntityNotFoundException;
 
   /**
    * get all projects associated with user by calling repository if id cannot be found, throw
    * EntityNotFoundException
    *
    * @param userId id of user
-   * @return id of the deleted user
+   * @return
    */
-  List<UserProjectDTO> getUsersProjects(Integer userId) throws EntityNotFoundException;
+  List<ProjectDTO> getUsersProjects(Integer userId) throws EntityNotFoundException;
 
   /**
    * get all projects associated with user by calling repository if id cannot be found, throw
    * EntityNotFoundException
    *
    * @param projectId id of user
-   * @return id of the deleted user
+   * @return list of
    */
-  List<UserProjectDTO> getProjectsUsers(Integer projectId) throws EntityNotFoundException;
+  List<UserDTO> getProjectsUsers(Integer projectId) throws EntityNotFoundException;
 }

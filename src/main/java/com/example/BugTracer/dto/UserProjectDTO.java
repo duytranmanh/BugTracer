@@ -3,6 +3,7 @@ package com.example.BugTracer.dto;
 import com.example.BugTracer.model.Role;
 import com.example.BugTracer.model.UserProjectId;
 import jakarta.validation.constraints.NotNull;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.time.LocalDateTime;
 
