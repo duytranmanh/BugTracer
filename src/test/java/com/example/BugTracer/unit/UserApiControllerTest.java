@@ -4,11 +4,13 @@ import com.example.BugTracer.controller.UserController;
 import com.example.BugTracer.dto.UserDTO;
 import com.example.BugTracer.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.MockReset;
 import org.springframework.test.web.servlet.MockMvc;
 
 
@@ -74,7 +76,6 @@ public class UserApiControllerTest {
     returnedDTO.setPassword(null);
 
     //mocking the userService call
-    //TODO: problem here
     Mockito.when(userService.add(userDTO)).thenReturn(returnedDTO);
 
     //creating an expected response body

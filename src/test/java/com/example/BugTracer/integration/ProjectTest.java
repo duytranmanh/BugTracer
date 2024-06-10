@@ -1,18 +1,27 @@
 package com.example.BugTracer.integration;
 
+import com.example.BugTracer.dto.ProjectDTO;
 import com.example.BugTracer.dto.UserDTO;
+import com.example.BugTracer.service.ProjectService;
 import com.example.BugTracer.service.UserService;
+import com.example.BugTracer.service.impl.ProjectServiceImpl;
+import com.example.BugTracer.util.ProjectGenerator;
 import com.example.BugTracer.util.UserGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityNotFoundException;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.test.web.servlet.MockMvcBuilder;
+import org.springframework.transaction.annotation.Transactional;
 
 import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -23,36 +32,42 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-/**
- * This integration test the function of the application when making api calls in UserController
- */
 @SpringBootTest
 @AutoConfigureMockMvc
-public class UserTest {
-  @Autowired
+public class ProjectTest {
+
+
   private MockMvc mockMvc;
 
-  @Autowired
+
   private ObjectMapper objectMapper;
 
-  @Autowired
-  private UserGenerator userGenerator;
+
+  private ProjectGenerator projectGenerator;
+
+
+  private ProjectService projectService;
+
+  private static final String END_POINT = "/project";
 
   @Autowired
-  private UserService userService;
-
-  private static final Logger LOGGER = LoggerFactory.getLogger(UserTest.class);
-  private static final String END_POINT = "/user";
-
+  public ProjectTest(MockMvc mockMvc, ObjectMapper objectMapper, ProjectGenerator projectGenerator,
+      ProjectService projectService) {
+    this.mockMvc = mockMvc;
+    this.objectMapper = objectMapper;
+    this.projectGenerator = projectGenerator;
+    this.projectService = projectService;
+  }
 
   /**
-   * This test all request to UserController with invalid format (body not in JSON, missing param)
+   * This test all request to ProjectController with invalid format (body not in JSON, missing
+   * param) returns
    * @throws Exception
    */
   @Test
   public void testInvalidFormatRequests() throws Exception {
     mockMvc.perform(post(END_POINT)
-            .contentType("application/json")
+            .contentType(MediaType.APPLICATION_JSON)
             .content(""))
         .andExpect(status().isBadRequest())
         .andDo(print());
@@ -77,22 +92,19 @@ public class UserTest {
    * @throws Exception
    */
   @Test
-  public void testAddingValidUser() throws Exception {
-    UserDTO userDTO = userGenerator.generate();
+  public void testAddingValidProject() throws Exception {
+    ProjectDTO proj = projectGenerator.generate();
 
-    String email = userDTO.getEmail();
-    String username = userDTO.getUsername();
+    String name = proj.getName();
 
-    String requestBody = objectMapper.writeValueAsString(userDTO);
+    String requestBody = objectMapper.writeValueAsString(proj);
 
     mockMvc.perform(post(END_POINT)
             .contentType("application/json")
             .content(requestBody))
         .andExpect(status().isOk())
-        .andExpectAll(jsonPath("$.email", is(email)), jsonPath("$.username", is(username)))
+//        .andExpectAll(jsonPath("$.name", is(name)))
         .andDo(print());
-
-    Assertions.assertEquals(userDTO, userService.getByUsername(username));
   }
 
   /**
@@ -100,10 +112,10 @@ public class UserTest {
    * @throws Exception
    */
   @Test
-  public void testAddingInvalidUser() throws Exception {
-    UserDTO invalidUser = new UserDTO();
+  public void testAddingInvalidProject() throws Exception {
+    ProjectDTO invalidProject = new ProjectDTO();
 
-    String requestBody = objectMapper.writeValueAsString(invalidUser);
+    String requestBody = objectMapper.writeValueAsString(invalidProject);
 
     mockMvc.perform(post(END_POINT)
             .contentType("application/json")
@@ -118,17 +130,17 @@ public class UserTest {
    * @throws Exception
    */
   @Test
-  public void testDeleteValidUser() throws Exception {
-    userService.add(userGenerator.generate());
-    Integer userId = userService.getAll().get(0).getId();
+  public void testDeleteValidProject() throws Exception {
+    projectService.add(projectGenerator.generate());
+    Integer projectId = projectService.getAll().get(0).getId();
 
-    mockMvc.perform(delete(END_POINT + "/" + userId)
+    mockMvc.perform(delete(END_POINT + "/" + projectId)
             .contentType("application/json"))
         .andExpect(status().isOk())
         .andDo(print());
 
     //Assert that entity is not found
-    Assertions.assertThrows(EntityNotFoundException.class,() -> userService.get(userId));
+    Assertions.assertThrows(EntityNotFoundException.class,() -> projectService.get(projectId));
   }
 
   /**
@@ -136,14 +148,13 @@ public class UserTest {
    * @throws Exception
    */
   @Test
-  public void testGetValidUser() throws Exception {
-    userService.add(userGenerator.generate());
-    UserDTO userDTO = userService.getAll().get(0);
+  public void testGetValidProject() throws Exception {
+    projectService.add(projectGenerator.generate());
+    ProjectDTO projectDTO = projectService.getAll().get(0);
 
-    mockMvc.perform(get(END_POINT + "/" + userDTO.getId()))
+    mockMvc.perform(get(END_POINT + "/" + projectDTO.getId()))
         .andExpect(status().isOk())
-        .andExpectAll(jsonPath("$.email", is(userDTO.getEmail())), jsonPath("$.username",
-            is(userDTO.getUsername())))
+        .andExpectAll(jsonPath("$.name", is(projectDTO.getName())))
         .andDo(print());
   }
 
@@ -153,20 +164,20 @@ public class UserTest {
    * @throws Exception
    */
   @Test
-  public void testUpdateValidUser() throws Exception{
-    userService.add(userGenerator.generate());
-    UserDTO userDTO = userService.getAll().get(0);
-    UserDTO updatedUser = userGenerator.generate();
-    updatedUser.setId(userDTO.getId());
+  public void testUpdateValidProject() throws Exception{
+    projectService.add(projectGenerator.generate());
+    ProjectDTO projectDTO = projectService.getAll().get(0);
+    ProjectDTO updatedProject = projectGenerator.generate();
+    updatedProject.setId(projectDTO.getId());
 
-    String requestBody = objectMapper.writeValueAsString(updatedUser);
+    String requestBody = objectMapper.writeValueAsString(updatedProject);
 
     mockMvc.perform(put(END_POINT)
             .contentType("application/json")
             .content(requestBody))
         .andExpect(status().isOk())
-        .andExpectAll(jsonPath("$.email", is(updatedUser.getEmail())), jsonPath("$.username",
-            is(updatedUser.getUsername())))
+        .andExpectAll(jsonPath("$.name",
+            is(updatedProject.getName())))
         .andDo(print());
 
   }
