@@ -1,5 +1,6 @@
 package com.example.BugTracer.model;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.EnumType;
@@ -15,7 +16,6 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 import org.hibernate.annotations.Where;
@@ -25,7 +25,9 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "users")
@@ -37,7 +39,7 @@ public class User {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Integer id;
   @NotNull(message = "username cannot be empty")
-  @Length(min = 1, max = 20, message = "your username is too long")
+  @Length(max = 100, message = "your username is too long")
   private String username;
   @NotNull(message = "username cannot be empty")
   @Length(min = 8, message = "your password is too short")
@@ -45,9 +47,8 @@ public class User {
   @NotNull(message = "username cannot be empty")
   @Email
   private String email;
-  @OneToMany
-  @Cascade(value = CascadeType.REMOVE)
-  private List<UserProject> userProjectList;
+  @OneToMany(mappedBy = "id.user", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<UserProject> userProjectList = new ArrayList<>();
   @CreatedDate
   private LocalDateTime createdDate;
   @LastModifiedDate
@@ -67,9 +68,6 @@ public class User {
     return userProjectList;
   }
 
-  public void setUserProjectList(List<UserProject> userProjectList) {
-    this.userProjectList = userProjectList;
-  }
 
   public Boolean getDeleted() {
     return isDeleted;
@@ -126,5 +124,20 @@ public class User {
 
   public void setEmail(String email) {
     this.email = email;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o)
+      return true;
+    if (o == null || getClass() != o.getClass())
+      return false;
+    User user = (User) o;
+    return Objects.equals(id, user.id);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(id);
   }
 }

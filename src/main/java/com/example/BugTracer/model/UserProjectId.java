@@ -5,6 +5,8 @@ import jakarta.persistence.ManyToOne;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
+import java.util.Objects;
+
 @Embeddable
 public class UserProjectId {
   @ManyToOne
@@ -12,12 +14,9 @@ public class UserProjectId {
   @ManyToOne
   private Project project;
 
-  public UserProjectId(Integer userId, Integer projectId) {
-    user = new User();
-    user.setId(userId);
-
-    project = new Project();
-    project.setId(projectId);
+  public UserProjectId(User user, Project project) {
+    this.user = user;
+    this.project = project;
   }
 
   public UserProjectId() {
@@ -37,5 +36,20 @@ public class UserProjectId {
 
   public void setProject(Project project) {
     this.project = project;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o)
+      return true;
+    if (o == null || getClass() != o.getClass())
+      return false;
+    UserProjectId that = (UserProjectId) o;
+    return Objects.equals(user, that.user) && Objects.equals(project, that.project);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(user, project);
   }
 }

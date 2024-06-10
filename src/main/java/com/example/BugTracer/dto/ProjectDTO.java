@@ -9,9 +9,7 @@ import java.util.Date;
 
 public class ProjectDTO {
   private Integer id;
-
-  @NotNull
-  @Length(max = 20, message = "your project name is too long")
+  @NotNull(message = "name cannot be null")
   private String name;
   private LocalDateTime createdDate;
   private LocalDateTime lastUpdated;
