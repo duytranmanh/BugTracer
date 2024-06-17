@@ -9,11 +9,7 @@ import com.example.BugTracer.util.ProjectGenerator;
 import com.example.BugTracer.util.UserGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityNotFoundException;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -34,6 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class) // This line specifies the ordering strategy
 public class ProjectTest {
 
 
@@ -48,7 +45,7 @@ public class ProjectTest {
 
   private ProjectService projectService;
 
-  private static final String END_POINT = "/project";
+  private static final String END_POINT = "/projects";
 
   @Autowired
   public ProjectTest(MockMvc mockMvc, ObjectMapper objectMapper, ProjectGenerator projectGenerator,
@@ -92,6 +89,7 @@ public class ProjectTest {
    * @throws Exception
    */
   @Test
+  @Order(1)
   public void testAddingValidProject() throws Exception {
     ProjectDTO proj = projectGenerator.generate();
 

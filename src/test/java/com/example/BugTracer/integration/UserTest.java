@@ -5,8 +5,7 @@ import com.example.BugTracer.service.UserService;
 import com.example.BugTracer.util.UserGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityNotFoundException;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -28,6 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 @SpringBootTest
 @AutoConfigureMockMvc
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class) // This line specifies the ordering strategy
 public class UserTest {
   @Autowired
   private MockMvc mockMvc;
@@ -42,7 +42,7 @@ public class UserTest {
   private UserService userService;
 
   private static final Logger LOGGER = LoggerFactory.getLogger(UserTest.class);
-  private static final String END_POINT = "/user";
+  private static final String END_POINT = "/users";
 
 
   /**
@@ -77,6 +77,7 @@ public class UserTest {
    * @throws Exception
    */
   @Test
+  @Order(1)
   public void testAddingValidUser() throws Exception {
     UserDTO userDTO = userGenerator.generate();
 
