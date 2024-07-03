@@ -69,7 +69,7 @@ public class UserProjectServiceImpl implements UserProjectService {
       userProject.setId(userProjectId);
 
       //return a dto from a user role that was saved to repo
-      return modelMapper.map(userProjectRepository.save(userProject), UserProjectDTO.class);
+      return modelMapper.map(userProjectRepository.saveAndFlush(userProject), UserProjectDTO.class);
     } else
       throw new EntityExistsException("Role");
   }
@@ -117,7 +117,7 @@ public class UserProjectServiceImpl implements UserProjectService {
 
       //map dto to object
       //then map object to dto for return statement
-      return modelMapper.map(userProjectRepository.save(modelMapper.map(userProjectDTO,
+      return modelMapper.map(userProjectRepository.saveAndFlush(modelMapper.map(userProjectDTO,
           UserProject.class)), UserProjectDTO.class);
     }
 
