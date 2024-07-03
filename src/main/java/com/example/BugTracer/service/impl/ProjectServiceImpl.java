@@ -45,9 +45,7 @@ public class ProjectServiceImpl implements ProjectService {
   @Override
   public ProjectDTO add(ProjectDTO projectDTO) {
     Project project = modelMapper.map(projectDTO, Project.class);
-    Project projectSaved = projectRepository.save(project);
-    ProjectDTO returnProject = modelMapper.map(projectSaved, ProjectDTO.class);
-    return returnProject;
+      return modelMapper.map(projectRepository.saveAndFlush(project), ProjectDTO.class);
   }
 
   /**
@@ -79,7 +77,7 @@ public class ProjectServiceImpl implements ProjectService {
       Provider<Project> project = p -> projectRepository.getReferenceById(projectDTO.getId());
       typeMapToProject.setProvider(project);
 
-      return modelMapper.map(projectRepository.save(modelMapper.map(projectDTO, Project.class)), ProjectDTO.class);
+      return modelMapper.map(projectRepository.saveAndFlush(modelMapper.map(projectDTO, Project.class)), ProjectDTO.class);
     } else
       throw new EntityNotFoundException("project");
   }

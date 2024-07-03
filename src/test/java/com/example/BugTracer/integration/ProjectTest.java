@@ -1,23 +1,17 @@
 package com.example.BugTracer.integration;
 
 import com.example.BugTracer.dto.ProjectDTO;
-import com.example.BugTracer.dto.UserDTO;
 import com.example.BugTracer.service.ProjectService;
-import com.example.BugTracer.service.UserService;
-import com.example.BugTracer.service.impl.ProjectServiceImpl;
 import com.example.BugTracer.util.ProjectGenerator;
-import com.example.BugTracer.util.UserGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MockMvcBuilder;
-import org.springframework.transaction.annotation.Transactional;
 
 import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -33,27 +27,47 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class) // This line specifies the ordering strategy
 public class ProjectTest {
 
-
+@Autowired
   private MockMvc mockMvc;
 
-
+@Autowired
   private ObjectMapper objectMapper;
 
-
+  @Autowired
   private ProjectGenerator projectGenerator;
 
-
+  @Autowired
   private ProjectService projectService;
 
   private static final String END_POINT = "/projects";
 
-  @Autowired
-  public ProjectTest(MockMvc mockMvc, ObjectMapper objectMapper, ProjectGenerator projectGenerator,
-      ProjectService projectService) {
-    this.mockMvc = mockMvc;
-    this.objectMapper = objectMapper;
-    this.projectGenerator = projectGenerator;
-    this.projectService = projectService;
+//  public ProjectTest(MockMvc mockMvc, ObjectMapper objectMapper, ProjectGenerator projectGenerator,
+//      ProjectService projectService) {
+//    this.mockMvc = mockMvc;
+//    this.objectMapper = objectMapper;
+//    this.projectGenerator = projectGenerator;
+//    this.projectService = projectService;
+//  }
+
+  /**
+   * this test tests if adding valid user comes back with 200 code
+   * @throws Exception
+   */
+  @Test
+  @Order(1)
+  public void testAddingValidProject() throws Exception {
+    ProjectDTO proj = projectGenerator.generate();
+
+    String name = proj.getName();
+
+    String requestBody = objectMapper.writeValueAsString(proj);
+
+    mockMvc.perform(post(END_POINT)
+                    .contentType("application/json")
+                    .content(requestBody))
+            .andExpect(status().isOk())
+//        .andExpectAll(jsonPath("$.name", is(name)))
+            .andDo(print());
   }
 
   /**
@@ -84,26 +98,6 @@ public class ProjectTest {
         .andDo(print());
   }
 
-  /**
-   * this test tests if adding valid user comes back with 200 code
-   * @throws Exception
-   */
-  @Test
-  @Order(1)
-  public void testAddingValidProject() throws Exception {
-    ProjectDTO proj = projectGenerator.generate();
-
-    String name = proj.getName();
-
-    String requestBody = objectMapper.writeValueAsString(proj);
-
-    mockMvc.perform(post(END_POINT)
-            .contentType("application/json")
-            .content(requestBody))
-        .andExpect(status().isOk())
-//        .andExpectAll(jsonPath("$.name", is(name)))
-        .andDo(print());
-  }
 
   /**
    * This test tests if creating an invalid user(no name, password, email) returns
