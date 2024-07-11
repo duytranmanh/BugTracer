@@ -1,26 +1,38 @@
 package com.example.BugTracer.model;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.EmbeddedId;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 public class Task {
-  @EmbeddedId
-  private TaskId id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Integer id;
   private String title;
   private String description;
+
+  @ManyToOne
+  private User author;
+  @ManyToOne
+  private Project project;
 
   @Enumerated(EnumType.ORDINAL)
   private TaskStatus taskStatus;
 
   @OneToMany(mappedBy = "id.task", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<Comment> commentList;
+
+  @CreatedDate
+  private LocalDateTime createdDate;
+
+  @LastModifiedDate
+  private LocalDateTime updatedDate;
 
   public TaskStatus getTaskStatus() {
     return taskStatus;
@@ -38,12 +50,28 @@ public class Task {
     this.commentList = commentList;
   }
 
-  public TaskId getId() {
+  public Integer getId() {
     return id;
   }
 
-  public void setId(TaskId id) {
+  public void setId(Integer id) {
     this.id = id;
+  }
+
+  public User getAuthor() {
+    return author;
+  }
+
+  public void setAuthor(User user) {
+    this.author = user;
+  }
+
+  public Project getProject() {
+    return project;
+  }
+
+  public void setProject(Project project) {
+    this.project = project;
   }
 
   public String getTitle() {
@@ -63,10 +91,19 @@ public class Task {
   }
 
   public TaskStatus getStatus() {
+    if (taskStatus == null) taskStatus = TaskStatus.UNASSIGNED;
     return taskStatus;
   }
 
   public void setStatus(TaskStatus taskStatus) {
     this.taskStatus = taskStatus;
+  }
+
+  public LocalDateTime getUpdatedDate() {
+    return updatedDate;
+  }
+
+  public LocalDateTime getCreatedDate() {
+    return createdDate;
   }
 }
