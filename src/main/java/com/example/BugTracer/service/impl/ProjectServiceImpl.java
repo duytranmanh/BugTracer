@@ -1,7 +1,6 @@
 package com.example.BugTracer.service.impl;
 
 import com.example.BugTracer.dto.ProjectDTO;
-import com.example.BugTracer.dto.UserDTO;
 import com.example.BugTracer.model.Project;
 import com.example.BugTracer.repo.ProjectRepository;
 import com.example.BugTracer.service.ProjectService;
@@ -12,105 +11,115 @@ import org.modelmapper.TypeMap;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
 public class ProjectServiceImpl implements ProjectService {
   private final ProjectRepository projectRepository;
   private final ModelMapper modelMapper;
-  private final TypeMap typeMapToProject;
+  private final TypeMap<ProjectDTO, Project> typeMapToProject;
+  private final TypeMap<Project, ProjectDTO> typeMapToDTO;
 
   /**
-   * Dependency injection set up
-   * Creating mapping rules when mapping from userDTO to user and in reverse
+   * Constructor for dependency injection and mapping setup.
    *
-   * @param projectRepository repository for user
-   * @param modelMapper    model mapper
+   * @param projectRepository the project repository
+   * @param modelMapper       the model mapper
    */
   public ProjectServiceImpl(ProjectRepository projectRepository, ModelMapper modelMapper) {
     this.projectRepository = projectRepository;
     this.modelMapper = modelMapper;
 
     typeMapToProject = modelMapper.createTypeMap(ProjectDTO.class, Project.class);
+    typeMapToDTO = modelMapper.createTypeMap(Project.class, ProjectDTO.class);
+
+    typeMapToProject.implicitMappings();
+    typeMapToDTO.implicitMappings();
   }
 
   /**
-   * insert new user if their username is not used by calling repository
+   * Add a new project.
    *
-   * @param projectDTO userDTO
-   * @return a DTO of the newly created user
+   * @param projectDTO the project DTO
+   * @return the newly created project DTO
    */
   @Override
   public ProjectDTO add(ProjectDTO projectDTO) {
     Project project = modelMapper.map(projectDTO, Project.class);
-      return modelMapper.map(projectRepository.saveAndFlush(project), ProjectDTO.class);
+    project.setId(null); // Ensure the ID is null to let the database generate it
+    Project savedProject = projectRepository.saveAndFlush(project);
+    return modelMapper.map(savedProject, ProjectDTO.class);
   }
 
   /**
-   * delete project by calling repository
-   * if id cannot be found, throw EntityNotFoundException
+   * Delete a project by its ID.
    *
-   * @param projectId id of user
-   * @return id of the deleted user
+   * @param projectId the ID of the project
+   * @return the ID of the deleted project
+   * @throws EntityNotFoundException if the project is not found
    */
   @Override
   public Integer delete(Integer projectId) throws EntityNotFoundException {
     if (projectRepository.existsById(projectId)) {
       projectRepository.deleteById(projectId);
       return projectId;
-    } else
-      throw new EntityNotFoundException("project");
+    } else {
+      throw new EntityNotFoundException("Project not found with ID: " + projectId);
+    }
   }
 
   /**
-   * update project by calling repository
-   * if id cannot be found, throw EntityNotFoundException
+   * Update a project.
    *
-   * @param projectDTO id of user
-   * @return id of the deleted user
+   * @param projectDTO the project DTO
+   * @return the updated project DTO
+   * @throws EntityNotFoundException if the project is not found
    */
   @Override
   public ProjectDTO update(ProjectDTO projectDTO) throws EntityNotFoundException {
     if (projectRepository.existsById(projectDTO.getId())) {
-      Provider<Project> project = p -> projectRepository.getReferenceById(projectDTO.getId());
-      typeMapToProject.setProvider(project);
+      Provider<Project> projectProvider = p -> projectRepository.getReferenceById(projectDTO.getId());
+      typeMapToProject.setProvider(projectProvider);
 
-      return modelMapper.map(projectRepository.saveAndFlush(modelMapper.map(projectDTO, Project.class)), ProjectDTO.class);
-    } else
-      throw new EntityNotFoundException("project");
+      Project updatedProject = modelMapper.map(projectDTO, Project.class);
+      Project savedProject = projectRepository.saveAndFlush(updatedProject);
+      return modelMapper.map(savedProject, ProjectDTO.class);
+    } else {
+      throw new EntityNotFoundException("Project not found with ID: " + projectDTO.getId());
+    }
   }
 
   /**
-   * get project by calling repository
-   * if id cannot be found, throw EntityNotFoundException
+   * Get a project by its ID.
    *
-   * @param projectId id of user
-   * @return id of the deleted user
+   * @param projectId the ID of the project
+   * @return the project DTO
+   * @throws EntityNotFoundException if the project is not found
    */
   @Override
   public ProjectDTO get(Integer projectId) throws EntityNotFoundException {
-    if (projectRepository.existsById(projectId))
-      return modelMapper.map(projectRepository.getReferenceById(projectId), ProjectDTO.class);
-    else throw new EntityNotFoundException("project");
+    return projectRepository.findById(projectId)
+            .map(project -> modelMapper.map(project, ProjectDTO.class))
+            .orElseThrow(() -> new EntityNotFoundException("Project not found with ID: " + projectId));
   }
 
   /**
-   * get all projects by calling repository
+   * Get all projects.
    *
-   * @return list of projects
+   * @return the list of project DTOs
    */
   @Override
   public List<ProjectDTO> getAll() {
-    List<ProjectDTO> dtoList = new ArrayList<>();
-    for (Project project : projectRepository.findAll()) {
-      dtoList.add(modelMapper.map(project, ProjectDTO.class));
-    }
-
-    return dtoList;
+    return projectRepository.findAll().stream()
+            .map(project -> modelMapper.map(project, ProjectDTO.class))
+            .collect(Collectors.toList());
   }
 
+  /**
+   * Delete all projects.
+   */
   @Override
   public void deleteAll() {
     projectRepository.deleteAll();

@@ -39,7 +39,7 @@ public class Project {
   @OneToMany(mappedBy = "id.project", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<UserProject> userProjectList;
 
-  @OneToMany(mappedBy = "id.project", cascade = CascadeType.ALL, orphanRemoval = true)
+  @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<Task> taskList;
 
   public List<UserProject> getUserProjectList() {
