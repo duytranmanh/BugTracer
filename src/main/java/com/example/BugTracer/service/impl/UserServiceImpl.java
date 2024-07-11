@@ -54,6 +54,8 @@ public class UserServiceImpl implements UserService {
         src -> src.when(Conditions.isNotNull()).map(UserDTO::getPassword, User::setPassword));
     typeMapToUser.addMappings(
         src -> src.when(Conditions.isNotNull()).map(UserDTO::getUsername, User::setUsername));
+    typeMapToUser.implicitMappings();
+    typeMapToDTO.implicitMappings();
   }
 
 

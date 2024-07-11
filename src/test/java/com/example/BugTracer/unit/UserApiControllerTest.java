@@ -27,7 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 //@SpringBootTest
 //@AutoConfigureMockMvc
 public class UserApiControllerTest {
-  private static final String END_POINT = "/user";
+  private static final String END_POINT = "/users";
   @Autowired
   private MockMvc mockMvc;
   @Autowired

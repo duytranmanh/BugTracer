@@ -24,8 +24,8 @@ public interface UserProjectService {
    * remove user out of a project by calling repository if id cannot be found, throw
    * EntityNotFoundException
    *
-   * @param userProjectId id of user and project
-   * @return id of the removed user
+   * @param userId id of user
+   * @param projectId id of project
    */
   void delete(Integer userId, Integer projectId) throws EntityNotFoundException;
 

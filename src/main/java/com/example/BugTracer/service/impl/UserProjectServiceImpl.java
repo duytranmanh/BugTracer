@@ -35,6 +35,8 @@ public class UserProjectServiceImpl implements UserProjectService {
   private final ProjectRepository projectRepository;
   private final ModelMapper modelMapper;
   private final TypeMap<UserProjectDTO, UserProject> typeMapToObject;
+  private final TypeMap<UserProject, UserProjectDTO> typeMapToDTO;
+
   public UserProjectServiceImpl(UserProjectRepository userRoleProjectRepository,
       UserRepository userRepository, ProjectRepository projectRepository, ModelMapper modelMapper) {
     this.userProjectRepository = userRoleProjectRepository;
@@ -42,9 +44,13 @@ public class UserProjectServiceImpl implements UserProjectService {
     this.projectRepository = projectRepository;
     this.modelMapper = modelMapper;
 
+    typeMapToDTO = modelMapper.createTypeMap(UserProject.class, UserProjectDTO.class);
     typeMapToObject = modelMapper.createTypeMap(UserProjectDTO.class, UserProject.class);
     typeMapToObject.addMappings(
         src -> src.when(Conditions.isNotNull()).map(UserProjectDTO::getRole, UserProject::setRole));
+
+    typeMapToObject.implicitMappings();
+    typeMapToDTO.implicitMappings();
   }
 
   /**
