@@ -1,22 +1,48 @@
 package com.example.BugTracer.model;
 
-import jakarta.persistence.EmbeddedId;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EntityListeners;
+import jakarta.persistence.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.time.LocalDateTime;
+
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 public class Comment {
-  @EmbeddedId
-  private CommentId id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Integer id;
   private String content;
 
-  public CommentId getId() {
+  @ManyToOne
+  private User author;
+  @ManyToOne
+  private Task task;
+
+  @CreatedDate
+  private LocalDateTime createdDate;
+  @LastModifiedDate
+  private LocalDateTime updatedDate;
+
+  public Integer getId() {
     return id;
   }
 
-  public void setId(CommentId id) {
-    this.id = id;
+  public User getAuthor() {
+    return author;
+  }
+
+  public void setAuthor(User user) {
+    this.author = user;
+  }
+
+  public Task getTask() {
+    return task;
+  }
+
+  public void setTask(Task task) {
+    this.task = task;
   }
 
   public String getContent() {
@@ -25,5 +51,13 @@ public class Comment {
 
   public void setContent(String content) {
     this.content = content;
+  }
+
+  public LocalDateTime getCreatedDate() {
+    return createdDate;
+  }
+
+  public LocalDateTime getUpdatedDate() {
+    return updatedDate;
   }
 }
