@@ -1,11 +1,8 @@
 package com.example.BugTracer.dto;
 
-import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.validation.constraints.NotNull;
-import org.hibernate.validator.constraints.Length;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 
 public class ProjectDTO {
   private Integer id;

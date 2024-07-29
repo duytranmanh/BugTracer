@@ -30,7 +30,7 @@ public class TaskController {
     }
 
     @PostMapping("projects/{projectId}/tasks")
-    public ResponseEntity<TaskDTO> create(@RequestBody TaskDTO taskDTO, @PathVariable("projectId") Integer projectId) {
+    public ResponseEntity<TaskDTO> add(@RequestBody TaskDTO taskDTO, @PathVariable("projectId") Integer projectId) {
         return ResponseEntity.status(HttpStatus.CREATED).body(taskService.add(bindId(taskDTO, projectId, null)));
     }
 
