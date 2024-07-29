@@ -10,15 +10,11 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
-import jakarta.persistence.PreRemove;
-import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
-import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
-import org.hibernate.annotations.Where;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -52,7 +48,7 @@ public class User {
   @CreatedDate
   private LocalDateTime createdDate;
   @LastModifiedDate
-  private LocalDateTime lastUpdated;
+  private LocalDateTime updatedDate;
   @Enumerated(EnumType.ORDINAL)
   private Role role;
 
@@ -81,8 +77,8 @@ public class User {
     return createdDate;
   }
 
-  public LocalDateTime getLastUpdated() {
-    return lastUpdated;
+  public LocalDateTime getUpdatedDate() {
+    return updatedDate;
   }
 
   public Role getRole() {

@@ -18,7 +18,7 @@ public class UserProjectDTO {
   @NotNull
   private Role role;
   private LocalDateTime createdDate;
-  private LocalDateTime lastUpdated;
+  private LocalDateTime updatedDate;
 
   public Role getRole() {
     return role;
@@ -36,12 +36,12 @@ public class UserProjectDTO {
     this.createdDate = createdDate;
   }
 
-  public LocalDateTime getLastUpdated() {
-    return lastUpdated;
+  public LocalDateTime getUpdatedDate() {
+    return updatedDate;
   }
 
-  public void setLastUpdated(LocalDateTime lastUpdated) {
-    this.lastUpdated = lastUpdated;
+  public void setUpdatedDate(LocalDateTime updatedDate) {
+    this.updatedDate = updatedDate;
   }
 
   public Integer getUserId() {

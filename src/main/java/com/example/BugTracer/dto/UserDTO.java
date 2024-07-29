@@ -24,7 +24,7 @@ public class UserDTO {
 
   private LocalDateTime createdDate;
 
-  private LocalDateTime lastUpdated;
+  private LocalDateTime updatedDate;
 
   public String getUsername() {
     return username;
@@ -53,16 +53,16 @@ public class UserDTO {
   public LocalDateTime getCreatedDate() {
     return createdDate;
   }
-  public LocalDateTime getLastUpdated() {
-    return lastUpdated;
+  public LocalDateTime getUpdatedDate() {
+    return updatedDate;
   }
 
   public void setCreatedDate(LocalDateTime createdDate) {
     this.createdDate = createdDate;
   }
 
-  public void setLastUpdated(LocalDateTime lastUpdated) {
-    this.lastUpdated = lastUpdated;
+  public void setUpdatedDate(LocalDateTime updatedDate) {
+    this.updatedDate = updatedDate;
   }
 
   public Integer getId() {

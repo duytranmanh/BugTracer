@@ -5,8 +5,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.PreUpdate;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -27,7 +25,7 @@ public class UserProject {
   @CreatedDate
   private LocalDateTime createdDate;
   @LastModifiedDate
-  private LocalDateTime lastUpdated;
+  private LocalDateTime updatedDate;
 
   public void setId(UserProjectId id) {
     this.id = id;
@@ -50,8 +48,8 @@ public class UserProject {
     return createdDate;
   }
 
-  public LocalDateTime getLastUpdated() {
-    return lastUpdated;
+  public LocalDateTime getUpdatedDate() {
+    return updatedDate;
   }
 
   @Override

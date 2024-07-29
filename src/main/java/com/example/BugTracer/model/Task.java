@@ -25,7 +25,7 @@ public class Task {
   @Enumerated(EnumType.ORDINAL)
   private TaskStatus taskStatus;
 
-  @OneToMany(mappedBy = "id.task", cascade = CascadeType.ALL, orphanRemoval = true)
+  @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<Comment> commentList;
 
   @CreatedDate

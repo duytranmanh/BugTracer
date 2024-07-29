@@ -12,7 +12,7 @@ public class ProjectDTO {
   @NotNull(message = "name cannot be null")
   private String name;
   private LocalDateTime createdDate;
-  private LocalDateTime lastUpdated;
+  private LocalDateTime updatedDate;
 
   public LocalDateTime getCreatedDate() {
     return createdDate;
@@ -22,12 +22,12 @@ public class ProjectDTO {
     this.createdDate = createdDate;
   }
 
-  public LocalDateTime getLastUpdated() {
-    return lastUpdated;
+  public LocalDateTime getUpdatedDate() {
+    return updatedDate;
   }
 
-  public void setLastUpdated(LocalDateTime lastUpdated) {
-    this.lastUpdated = lastUpdated;
+  public void setUpdatedDate(LocalDateTime updatedDate) {
+    this.updatedDate = updatedDate;
   }
 
   public Integer getId() {
